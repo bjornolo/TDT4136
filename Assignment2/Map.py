@@ -66,7 +66,7 @@ class Map_Obj():
         """
         # Read map from provided csv file
         df = pd.read_csv(path, index_col=None, header=None)  # ,error_bad_lines=False)
-        # Convert pandas dataframe to numpy array
+        # Convert pandas data frame to numpy array
         data = df.values
         # Convert numpy array to string to make it more human readable
         data_str = data.astype(str)
@@ -326,7 +326,7 @@ class Map_Obj():
         # how the yellow path is painted)
         colors = {
             ' # ': (211, 33, 45),  # redish
-            ' . ': (215, 215, 215),  # whiteish
+            ' . ': (215, 215, 215),  # white-ish
             ' , ': (166, 166, 166),  # lightgrey
             ' : ': (96, 96, 96),   # darkgrey
             ' ; ': (36, 36, 36),   # blackish
