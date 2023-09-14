@@ -12,5 +12,6 @@
         "Samfundet",
         "Sánchez",
         "themap"
-    ]
+    ],
+    "python.analysis.typeCheckingMode": "basic"
 }
