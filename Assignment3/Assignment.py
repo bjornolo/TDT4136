@@ -20,6 +20,8 @@ class CSP:
         
         #number of backtracks
         self.backtracks = 0
+        #number of backtrack failures
+        self.backtrack_failures = 0
 
     def add_variable(self, name: str, domain: list):
         """Add a new variable to the CSP.
@@ -130,7 +132,6 @@ class CSP:
         """This functions starts the CSP solver and returns the found
         solution.
         """
-        print("entering backtracking_search")
         # Make a so-called "deep copy" of the dictionary containing the
         # domains of the CSP variables. The deep copy is required to
         # ensure that any changes made to 'assignment' does not have any
@@ -169,7 +170,6 @@ class CSP:
         iterations of the loop.
         """
         self.backtracks += 1
-        print("entering backtrack", self.backtracks)
         
         # Check if assignment is complete
         if all(len(assignment[key]) == 1 for key in assignment):
@@ -189,7 +189,7 @@ class CSP:
             #print("new_assignment[",var,"]", new_assignment[var])
 
             # Check if the assignment is consistent
-            if self.inference(new_assignment, self.get_all_neighboring_arcs(var)):
+            if self.inference(new_assignment, self.get_all_neighboring_arcs(var)): # type: ignore
                 # Recursive call
                 result = self.backtrack(new_assignment)
 
@@ -198,6 +198,7 @@ class CSP:
                     return result
 
         # Return None if no solution was found
+        self.backtrack_failures += 1
         return None
 
     def select_unassigned_variable(self, assignment):
