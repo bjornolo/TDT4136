@@ -139,7 +139,7 @@ class CSP:
 
         # Run AC-3 on all constraints in the CSP, to weed out all of the
         # values that are not arc-consistent to begin with
-        #self.inference(assignment, self.get_all_arcs())
+        self.inference(assignment, self.get_all_arcs())
 
         # Call backtrack with the partial assignment 'assignment'
         return self.backtrack(assignment)
@@ -168,10 +168,9 @@ class CSP:
         assignments and inferences that took place in previous
         iterations of the loop.
         """
-
-        print("entering backtrack", self.backtracks)
         self.backtracks += 1
-
+        print("entering backtrack", self.backtracks)
+        
         # Check if assignment is complete
         if all(len(assignment[key]) == 1 for key in assignment):
             return assignment
@@ -179,7 +178,7 @@ class CSP:
         # Select unassigned variable
         var = self.select_unassigned_variable(assignment)
 
-        print("assignment[",var,"]:", assignment[var])
+        #print("assignment[",var,"]:", assignment[var])
         # Loop through the domain of the variable
         for value in assignment[var]:
             # Make a deep copy of assignment
@@ -187,7 +186,7 @@ class CSP:
 
             # Assign the value to the variable
             new_assignment[var] = [value]
-            print("new_assignment[",var,"]", new_assignment[var])
+            #print("new_assignment[",var,"]", new_assignment[var])
 
             # Check if the assignment is consistent
             if self.inference(new_assignment, self.get_all_neighboring_arcs(var)):
@@ -222,19 +221,13 @@ class CSP:
         #The function 'AC-3' from the pseudocode in the textbook.'assignment' is the current partial assignment, that contains the lists of legal values for each undecided variable. 'queue'is the initial queue of arcs that should be visited.
         while queue:
             i, j = queue.pop(0)
-            print("AC-3:", i, j)
+            #print("AC-3:", i, j)
             if self.revise(assignment, i, j):
-                print("AC-3: revised!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                 if len(assignment[i]) == 0:
-                    print("AC-3: returning false")
                     return False
                 for k in self.get_all_neighboring_arcs(i):
                     if k[0] != j:
-                        print("AC-3: appending k", k)
                         queue.append(k)
-            else:
-                print("AC-3: not revised")
-        print("AC-3: returning True")
         return True
 
 
@@ -248,17 +241,20 @@ class CSP:
         legal values in 'assignment'.
         """
         revised = False
+        #print("Revise: x=assignment[",i,"]:" ,assignment[i],"y=assignment[",j,"]:", assignment[j])
         for x in assignment[i]:
-            print("Revise: x", x, assignment[j][0])
-            #print("Revise: constraints", self.constraints[i][j])
-            if not any(x == y for y in assignment[j]):
-                print("Revise: removing", x)
+            satisfied=False
+            for y in assignment[j]:
+                #print("Revise: checking:", (x,y))
+                if (x,y) in self.constraints[i][j]:
+                    #print("Revise: satisfied")
+                    satisfied=True
+                    break
+            if not satisfied:
+                #print("Revise: removing:", x, "from assignment[",i,"]:", assignment[i])
                 assignment[i].remove(x)
                 revised = True
-            if not any(self.constraints[i][j]):
-                assignment[i].remove(x)
-                revised = True
-        print("Revise: returning revised", revised)
+        #print("Revise: returning revised", revised)
         return revised
 
 
